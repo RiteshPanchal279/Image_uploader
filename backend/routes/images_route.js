@@ -9,7 +9,7 @@ const upload = multer({ storage });
 
 router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   try {
-    const { name, folder } = req.body;
+    const { name, folderId } = req.body;
 
     if (!req.file || !name) {
       return res.status(400).json({ message: 'Name and image are required.' });
@@ -18,7 +18,7 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
     const newImage = new Image({
       name,
       imageUrl: req.file.path,
-      folder: folder || null,
+      folder: folderId || null,
       user: req.user.id,
     });
 
@@ -27,6 +27,22 @@ router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
   } catch (err) {
     console.error('Upload Error:', err);
     res.status(500).json({ message: 'Image upload failed.',success:false });
+  }
+});
+
+router.get("/search",authMiddleware,async (req, res) => {
+  try {
+    const { name } = req.query;
+    const userId = req.user._id;
+
+    const images = await Image.find({
+      name: { $regex: name, $options: 'i' },
+      owner: userId,
+    });
+
+    res.json(images);
+  } catch (err) {
+    res.status(500).json({ error: 'Search failed' });
   }
 });
 

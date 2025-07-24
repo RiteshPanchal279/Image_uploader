@@ -8,7 +8,7 @@ export const register = async (req, res) => {
     if (!name || !email || !password)
       return res
         .status(400)
-        .json({ message: "sumthing is missing", success: false });
+        .json({ message: "something is missing", success: false });
 
     const user = await User.findOne({ email });
     if (user) {
@@ -32,7 +32,7 @@ export const register = async (req, res) => {
 
     return res
       .status(200)
-      .json({ token, success: true, message: "Account created successfully" });
+      .json({ token, success: true, message: "Account created successfully",success:true });
   } catch (error) {
     console.log("Error in user register ", error);
     res.status(500).json({ message: "Server error", success: false });

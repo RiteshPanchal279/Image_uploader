@@ -5,12 +5,13 @@ import userRoute from "./routes/user_route.js"
 import folderRoute from "./routes/folder_route.js"
 import imageRoute from "./routes/images_route.js"
 import { authMiddleware } from './middleware/authMiddleware.js';
+import cors from "cors"
 
 
 dotenv.config()
 const app = express();
-
 app.use(express.json())
+app.use(cors());
 
 app.get("/",(req,res)=>{
    res.send("Hello from home");
