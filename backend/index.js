@@ -1,7 +1,10 @@
 import express from 'express';
-import dbConnect from './db.js';
+import dbConnect from './config/db.js';
 import dotenv from 'dotenv'
 import userRoute from "./routes/user_route.js"
+import folderRoute from "./routes/folder_route.js"
+import imageRoute from "./routes/images_route.js"
+import { authMiddleware } from './middleware/authMiddleware.js';
 
 
 dotenv.config()
@@ -14,6 +17,8 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/user",userRoute);
+app.use("/folder",authMiddleware,folderRoute);
+app.use("/image",imageRoute);
 
 dbConnect()
 app.listen(3000,()=>{

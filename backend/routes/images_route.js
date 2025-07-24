@@ -1,0 +1,33 @@
+import express from 'express';
+import multer from 'multer';
+import { storage } from '../config/cloudinary.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
+import Image from '../model/Image.js';
+
+const router = express.Router();
+const upload = multer({ storage });
+
+router.post('/', authMiddleware, upload.single('image'), async (req, res) => {
+  try {
+    const { name, folder } = req.body;
+
+    if (!req.file || !name) {
+      return res.status(400).json({ message: 'Name and image are required.' });
+    }
+
+    const newImage = new Image({
+      name,
+      imageUrl: req.file.path,
+      folder: folder || null,
+      user: req.user.id,
+    });
+
+    await newImage.save();
+    res.status(201).json({newImage,success:true});
+  } catch (err) {
+    console.error('Upload Error:', err);
+    res.status(500).json({ message: 'Image upload failed.',success:false });
+  }
+});
+
+export default router;
