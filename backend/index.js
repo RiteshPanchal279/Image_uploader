@@ -20,8 +20,8 @@ app.get("/",(req,res)=>{
 app.use("/user",userRoute);
 app.use("/folder",authMiddleware,folderRoute);
 app.use("/image",imageRoute);
-
+const PORT = process.env.PORT || 3000
 dbConnect()
-app.listen(3000,()=>{
-   console.log("App listning at 3000 port")
+app.listen(PORT,()=>{
+   console.log(`App listning at ${PORT} port`)
 })
