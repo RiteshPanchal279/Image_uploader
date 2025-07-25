@@ -1,28 +1,33 @@
-import { useState } from 'react';
-import API from '../api';
-import { toast } from 'sonner';
+import { useState } from "react";
+import API from "../api";
+import { toast } from "sonner";
 
-export default function ImageUpload({ currentFolderId }) {
-  const [name, setName] = useState('');
+export default function ImageUpload({ currentFolderId ,dataFetch}) {
+  const [name, setName] = useState("");
   const [file, setFile] = useState(null);
+  const [upLoading, setUpLoading] = useState(false);
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file || !name) return toast.error('Name and image required');
+    if (!file || !name) return toast.error("Name and image required");
 
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('image', file);
-    if (currentFolderId) formData.append('folderId', currentFolderId);
+    formData.append("name", name);
+    formData.append("image", file);
+    if (currentFolderId) formData.append("folderId", currentFolderId);
 
     try {
-      await API.post('/image', formData);
-      toast.success('Image uploaded successfully');
-      setName('');
+      setUpLoading(true);
+      await API.post("/image", formData);
+      toast.success("Image uploaded successfully");
+      setName("");
       setFile(null);
+      dataFetch()
     } catch (err) {
       console.error(err);
-      toast.error('Upload failed');
+      toast.error("Upload failed");
+    } finally {
+      setUpLoading(false);
     }
   };
 
@@ -50,9 +55,14 @@ export default function ImageUpload({ currentFolderId }) {
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+        disabled={upLoading}
+        className={`w-full py-2 px-4 rounded-lg transition text-white ${
+          upLoading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
       >
-        Upload
+        {upLoading ? "Uploading..." : "Upload"}
       </button>
     </form>
   );

@@ -61,7 +61,7 @@ export default function FolderView({ parentId = null }) {
       </div>
 
       <div>
-        <ImageUpload currentFolderId={parentId} />
+        <ImageUpload currentFolderId={parentId} dataFetch={fetchData} />
       </div>
 
       <div>
